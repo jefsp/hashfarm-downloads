@@ -42,7 +42,21 @@ cp "$TMP_DIR/requirements.txt" "$INSTALL_DIR/"
 [[ -f "$TMP_DIR/uninstall-linux.sh" ]] && cp "$TMP_DIR/uninstall-linux.sh" "$INSTALL_DIR/"
 [[ -f "$TMP_DIR/update-linux.sh"    ]] && cp "$TMP_DIR/update-linux.sh"    "$INSTALL_DIR/"
 
+info "  Verificando virtualenv..."
+if [[ ! -f "$INSTALL_DIR/venv/bin/pip" ]]; then
+    warn "Virtualenv não encontrado — recriando..."
+    PYTHON=""
+    for cmd in python3.12 python3.11 python3.10 python3.9 python3; do
+        if command -v "$cmd" &>/dev/null && "$cmd" -c "import sys; assert sys.version_info >= (3,9)" 2>/dev/null; then
+            PYTHON="$cmd"; break
+        fi
+    done
+    [[ -z "$PYTHON" ]] && die "Python 3.9+ não encontrado. Instale com: sudo apt install python3 python3-venv"
+    "$PYTHON" -m venv "$INSTALL_DIR/venv"
+fi
+
 info "  Atualizando dependências Python..."
+"$INSTALL_DIR/venv/bin/pip" install --quiet --upgrade pip
 "$INSTALL_DIR/venv/bin/pip" install --quiet --upgrade -r "$INSTALL_DIR/requirements.txt"
 
 chown -R "$SERVICE_USER:$SERVICE_USER" "$INSTALL_DIR"
