@@ -3,9 +3,11 @@
 # Uso: sudo bash update-linux.sh
 set -euo pipefail
 
-INSTALL_DIR="/opt/hashfarm-agent"
 SERVICE_NAME="hashfarm-agent"
-SERVICE_USER="hashfarm"
+
+# Detecta o diretório de instalação pelo arquivo do serviço systemd
+INSTALL_DIR=$(grep -oP '(?<=WorkingDirectory=).*' /etc/systemd/system/${SERVICE_NAME}.service 2>/dev/null || echo "/opt/hashfarm-agent")
+SERVICE_USER=$(grep -oP '(?<=User=).*' /etc/systemd/system/${SERVICE_NAME}.service 2>/dev/null || echo "hashfarm")
 DOWNLOAD_URL="https://github.com/jefsp/hashfarm-downloads/raw/main/hashfarm-agent-linux.tar.gz"
 TMP_FILE="/tmp/hashfarm-agent-update.tar.gz"
 TMP_DIR="/tmp/hashfarm-agent-update"
