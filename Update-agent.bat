@@ -63,13 +63,13 @@ if %errorlevel% neq 0 (
     pause
     exit /b 1
 )
-xcopy /y /q "%EXTRACTED%\requirements.txt" "%INSTALL_DIR%\" >nul
-if exist "%EXTRACTED%\_install.ps1"        (xcopy /y /q "%EXTRACTED%\_install.ps1"        "%INSTALL_DIR%\" >nul)
-if exist "%EXTRACTED%\_uninstall.ps1"      (xcopy /y /q "%EXTRACTED%\_uninstall.ps1"      "%INSTALL_DIR%\" >nul)
-if exist "%EXTRACTED%\Install-agent.bat"   (xcopy /y /q "%EXTRACTED%\Install-agent.bat"   "%INSTALL_DIR%\" >nul)
-if exist "%EXTRACTED%\Uninstall-agent.bat" (xcopy /y /q "%EXTRACTED%\Uninstall-agent.bat" "%INSTALL_DIR%\" >nul)
-if exist "%EXTRACTED%\Restart-agent.bat"   (xcopy /y /q "%EXTRACTED%\Restart-agent.bat"   "%INSTALL_DIR%\" >nul)
-if exist "%EXTRACTED%\Update-agent.bat"    (xcopy /y /q "%EXTRACTED%\Update-agent.bat"    "%INSTALL_DIR%\" >nul)
+if exist "%EXTRACTED%\requirements.txt"   (xcopy /y /q "%EXTRACTED%\requirements.txt"   "%INSTALL_DIR%\" >nul 2>&1)
+if exist "%EXTRACTED%\_install.ps1"        (xcopy /y /q "%EXTRACTED%\_install.ps1"        "%INSTALL_DIR%\" >nul 2>&1)
+if exist "%EXTRACTED%\_uninstall.ps1"      (xcopy /y /q "%EXTRACTED%\_uninstall.ps1"      "%INSTALL_DIR%\" >nul 2>&1)
+if exist "%EXTRACTED%\Install-agent.bat"   (xcopy /y /q "%EXTRACTED%\Install-agent.bat"   "%INSTALL_DIR%\" >nul 2>&1)
+if exist "%EXTRACTED%\Uninstall-agent.bat" (xcopy /y /q "%EXTRACTED%\Uninstall-agent.bat" "%INSTALL_DIR%\" >nul 2>&1)
+if exist "%EXTRACTED%\Restart-agent.bat"   (xcopy /y /q "%EXTRACTED%\Restart-agent.bat"   "%INSTALL_DIR%\" >nul 2>&1)
+if exist "%EXTRACTED%\Update-agent.bat"    (xcopy /y /q "%EXTRACTED%\Update-agent.bat"    "%INSTALL_DIR%\" >nul 2>&1)
 
 "%INSTALL_DIR%\venv\Scripts\pip.exe" install --quiet --upgrade -r "%INSTALL_DIR%\requirements.txt" >nul 2>&1
 
