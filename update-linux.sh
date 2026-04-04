@@ -75,5 +75,12 @@ else
 fi
 
 NEW_VERSION=$(grep '__version__' "$INSTALL_DIR/agent/__init__.py" 2>/dev/null | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+' || echo "desconhecida")
-echo -e "\n${BOLD}${GREEN}  Atualização concluída! → v${NEW_VERSION}${RESET}"
-echo -e "  Acesse https://app.go2mine.com para confirmar que o agente está online.\n"
+
+echo ""
+echo -e "${BOLD}  ============================================${RESET}"
+echo -e "${BOLD}${GREEN}  Atualizacao concluida!${RESET}"
+echo -e "${BOLD}  Versao instalada: v${NEW_VERSION}${RESET}"
+echo -e "  Acesse https://app.go2mine.com para confirmar"
+echo -e "  que o agente esta online."
+echo -e "${BOLD}  ============================================${RESET}"
+echo ""
