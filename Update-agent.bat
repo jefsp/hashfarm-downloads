@@ -7,9 +7,9 @@ if %errorlevel% neq 0 (
 
 set TASK_NAME=go2mine hashfarm-agent
 set INSTALL_DIR=C:\hashfarm-agent
-set DOWNLOAD_URL=https://github.com/jefsp/hashfarm-downloads/raw/main/hashfarm-agent-windows.zip
-set TMP_ZIP=%TEMP%\hashfarm-agent-update.zip
-set TMP_DIR=%TEMP%\hashfarm-agent-update
+set DOWNLOAD_URL=https://github.com/jefsp/hashfarm-downloads/releases/latest/download/hashfarm-agent-windows.zip
+set TMP_ZIP=C:\Temp\hf-update.zip
+set TMP_DIR=C:\Temp\hf-update
 
 echo.
 echo  Atualizando agente go2mine...
@@ -18,10 +18,13 @@ echo.
 
 echo [1/5] Parando o agente...
 schtasks /End /TN "%TASK_NAME%" >nul 2>&1
-timeout /t 3 /nobreak >nul
+timeout /t 2 /nobreak >nul
+powershell -Command "Get-Process python -ErrorAction SilentlyContinue | Stop-Process -Force" >nul 2>&1
+timeout /t 2 /nobreak >nul
 echo        OK
 
 echo [2/5] Baixando nova versao...
+if not exist "C:\Temp" mkdir "C:\Temp"
 powershell -Command "Invoke-WebRequest -Uri '%DOWNLOAD_URL%' -OutFile '%TMP_ZIP%' -UseBasicParsing"
 if %errorlevel% neq 0 (
     echo.
@@ -42,10 +45,12 @@ if %errorlevel% neq 0 (
 echo        OK
 
 echo [4/5] Atualizando arquivos do agente (config.toml preservado)...
-set EXTRACTED=
-for /d %%i in ("%TMP_DIR%\*") do set EXTRACTED=%%i
-if "%EXTRACTED%"=="" set EXTRACTED=%TMP_DIR%
-
+set EXTRACTED=%TMP_DIR%
+if not exist "%TMP_DIR%\agent" (
+    for /d %%i in ("%TMP_DIR%\*") do (
+        if exist "%%i\agent" set EXTRACTED=%%i
+    )
+)
 if not exist "%EXTRACTED%\agent" (
     echo [ERRO] Estrutura do ZIP inesperada.
     pause
@@ -53,13 +58,18 @@ if not exist "%EXTRACTED%\agent" (
 )
 
 xcopy /e /y /q "%EXTRACTED%\agent" "%INSTALL_DIR%\agent\" >nul
+if %errorlevel% neq 0 (
+    echo [ERRO] Falha ao copiar arquivos do agente.
+    pause
+    exit /b 1
+)
 xcopy /y /q "%EXTRACTED%\requirements.txt" "%INSTALL_DIR%\" >nul
-if exist "%EXTRACTED%\_install.ps1"        xcopy /y /q "%EXTRACTED%\_install.ps1"        "%INSTALL_DIR%\" >nul
-if exist "%EXTRACTED%\_uninstall.ps1"      xcopy /y /q "%EXTRACTED%\_uninstall.ps1"      "%INSTALL_DIR%\" >nul
-if exist "%EXTRACTED%\Install-agent.bat"   xcopy /y /q "%EXTRACTED%\Install-agent.bat"   "%INSTALL_DIR%\" >nul
-if exist "%EXTRACTED%\Uninstall-agent.bat" xcopy /y /q "%EXTRACTED%\Uninstall-agent.bat" "%INSTALL_DIR%\" >nul
-if exist "%EXTRACTED%\Restart-agent.bat"   xcopy /y /q "%EXTRACTED%\Restart-agent.bat"   "%INSTALL_DIR%\" >nul
-if exist "%EXTRACTED%\Update-agent.bat"    xcopy /y /q "%EXTRACTED%\Update-agent.bat"    "%INSTALL_DIR%\" >nul
+if exist "%EXTRACTED%\_install.ps1"        (xcopy /y /q "%EXTRACTED%\_install.ps1"        "%INSTALL_DIR%\" >nul)
+if exist "%EXTRACTED%\_uninstall.ps1"      (xcopy /y /q "%EXTRACTED%\_uninstall.ps1"      "%INSTALL_DIR%\" >nul)
+if exist "%EXTRACTED%\Install-agent.bat"   (xcopy /y /q "%EXTRACTED%\Install-agent.bat"   "%INSTALL_DIR%\" >nul)
+if exist "%EXTRACTED%\Uninstall-agent.bat" (xcopy /y /q "%EXTRACTED%\Uninstall-agent.bat" "%INSTALL_DIR%\" >nul)
+if exist "%EXTRACTED%\Restart-agent.bat"   (xcopy /y /q "%EXTRACTED%\Restart-agent.bat"   "%INSTALL_DIR%\" >nul)
+if exist "%EXTRACTED%\Update-agent.bat"    (xcopy /y /q "%EXTRACTED%\Update-agent.bat"    "%INSTALL_DIR%\" >nul)
 
 "%INSTALL_DIR%\venv\Scripts\pip.exe" install --quiet --upgrade -r "%INSTALL_DIR%\requirements.txt" >nul 2>&1
 
@@ -75,9 +85,17 @@ if %errorlevel% neq 0 (
     echo        OK
 )
 
+set NEW_VERSION=
+for /f "tokens=2 delims== " %%v in ('findstr "__version__" "%INSTALL_DIR%\agent\__init__.py" 2^>nul') do set NEW_VERSION=%%~v
+
 echo.
 echo  ============================================
 echo  Atualizacao concluida!
+if defined NEW_VERSION (
+    echo  Versao instalada: v%NEW_VERSION%
+) else (
+    echo  Versao instalada: desconhecida
+)
 echo  Acesse https://app.go2mine.com para confirmar
 echo  que o agente esta online.
 echo  ============================================
