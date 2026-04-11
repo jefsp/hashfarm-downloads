@@ -43,6 +43,7 @@ cp "$TMP_DIR/requirements.txt" "$INSTALL_DIR/"
 [[ -f "$TMP_DIR/install-linux.sh"   ]] && cp "$TMP_DIR/install-linux.sh"   "$INSTALL_DIR/"
 [[ -f "$TMP_DIR/uninstall-linux.sh" ]] && cp "$TMP_DIR/uninstall-linux.sh" "$INSTALL_DIR/"
 [[ -f "$TMP_DIR/update-linux.sh"    ]] && cp "$TMP_DIR/update-linux.sh"    "$INSTALL_DIR/"
+[[ -f "$TMP_DIR/restart-linux.sh"   ]] && cp "$TMP_DIR/restart-linux.sh"   "$INSTALL_DIR/"
 
 info "  Verificando virtualenv..."
 if [[ ! -f "$INSTALL_DIR/venv/bin/pip" ]]; then
