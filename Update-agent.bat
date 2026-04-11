@@ -11,9 +11,13 @@ set DOWNLOAD_URL=https://github.com/jefsp/hashfarm-downloads/releases/latest/dow
 set TMP_ZIP=C:\Temp\hf-update.zip
 set TMP_DIR=C:\Temp\hf-update
 
+set OLD_VER=desconhecida
+for /f "tokens=2 delims== " %%v in ('findstr "__version__" "%INSTALL_DIR%\agent\__init__.py" 2^>nul') do set OLD_VER=%%~v
+
 echo.
 echo  Atualizando agente go2mine...
 echo  ============================================
+echo  Versao atual: %OLD_VER%
 echo.
 
 echo [1/5] Parando o agente...
@@ -75,6 +79,12 @@ if exist "%EXTRACTED%\Update-agent.bat"    (xcopy /y /q "%EXTRACTED%\Update-agen
 
 rd /s /q "%TMP_DIR%" >nul 2>&1
 del /q "%TMP_ZIP%" >nul 2>&1
+del /q "%INSTALL_DIR%\update.bat" >nul 2>&1
+del /q "%INSTALL_DIR%\install-windows.ps1" >nul 2>&1
+del /q "%INSTALL_DIR%\uninstall-windows.ps1" >nul 2>&1
+del /q "%INSTALL_DIR%\instalar-agente.bat" >nul 2>&1
+del /q "%INSTALL_DIR%\desinstalar-agente.bat" >nul 2>&1
+del /q "%INSTALL_DIR%\reiniciar-agente.bat" >nul 2>&1
 echo        OK
 
 echo [5/5] Reiniciando o agente...
