@@ -7,7 +7,7 @@ if %errorlevel% neq 0 (
 
 set TASK_NAME=go2mine hashfarm-agent
 set INSTALL_DIR=C:\hashfarm-agent
-set DOWNLOAD_URL=https://github.com/jefsp/hashfarm-downloads/releases/latest/download/hashfarm-agent-windows.zip
+set DOWNLOAD_URL=https://app.go2mine.com/api/v1/farms/agent-package/hashfarm-agent-windows.zip
 set TMP_ZIP=C:\Temp\hf-update.zip
 set TMP_DIR=C:\Temp\hf-update
 

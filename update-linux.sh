@@ -8,7 +8,7 @@ SERVICE_NAME="hashfarm-agent"
 # Detecta o diretório de instalação pelo arquivo do serviço systemd
 INSTALL_DIR=$(grep -oP '(?<=WorkingDirectory=).*' /etc/systemd/system/${SERVICE_NAME}.service 2>/dev/null || echo "/opt/hashfarm-agent")
 SERVICE_USER=$(grep -oP '(?<=User=).*' /etc/systemd/system/${SERVICE_NAME}.service 2>/dev/null || echo "hashfarm")
-DOWNLOAD_URL="https://github.com/jefsp/hashfarm-downloads/releases/latest/download/hashfarm-agent-linux.tar.gz"
+DOWNLOAD_URL="https://app.go2mine.com/api/v1/farms/agent-package/hashfarm-agent-linux.tar.gz"
 TMP_FILE="/tmp/hashfarm-agent-update.tar.gz"
 TMP_DIR="/tmp/hashfarm-agent-update"
 
